@@ -1,0 +1,7 @@
+{
+    "token": "<insert bot token>",
+    "clientId": "<insert clientID from Bot>",
+    "guildId": "<insert guildId from Discord server>",
+    "captainRoleId": "<insert Role ID>",
+    "correctPassword": "<select a password - case sensitive>"
+  }
