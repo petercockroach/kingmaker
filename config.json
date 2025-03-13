@@ -1,7 +1,10 @@
 {
-    "token": "<insert bot token>",
-    "clientId": "<insert clientID from Bot>",
-    "guildId": "<insert guildId from Discord server>",
-    "captainRoleId": "<insert Role ID>",
-    "correctPassword": "<select a password - case sensitive>"
+  "token": "<insert bot token>",
+  "clientId": "<insert clientID>",
+  "guildId": "<insert guildId>",
+  "roleMappings": {
+    "password1": "<roleId1>",
+    "password2": "<roleId2>",
+    "password3": "<roleId3>"
   }
+}

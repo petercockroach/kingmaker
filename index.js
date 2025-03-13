@@ -1,6 +1,6 @@
 const { Client, GatewayIntentBits, SlashCommandBuilder, Routes } = require('discord.js');
 const { REST } = require('@discordjs/rest');
-const { token, clientId, guildId, captainRoleId, correctPassword } = require('./config.json');
+const { token, clientId, guildId, roleMappings } = require('./config.json');
 
 // Create a new client instance
 const client = new Client({
@@ -15,10 +15,10 @@ client.once('ready', () => {
 const commands = [
   new SlashCommandBuilder()
     .setName('captain')
-    .setDescription('Request the Captain role by providing the correct password.')
+    .setDescription('Request a role by providing the correct password.')
     .addStringOption(option =>
       option.setName('password')
-      .setDescription('Enter the captain password')
+      .setDescription('Enter the role password')
       .setRequired(true)),
 ];
 
@@ -27,11 +27,7 @@ const rest = new REST({ version: '10' }).setToken(token);
 (async () => {
   try {
     console.log('Started refreshing application (/) commands.');
-
-    await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
-      body: commands,
-    });
-
+    await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commands });
     console.log('Successfully reloaded application (/) commands.');
   } catch (error) {
     console.error(error);
@@ -44,20 +40,17 @@ client.on('interactionCreate', async interaction => {
 
   if (interaction.commandName === 'captain') {
     const password = interaction.options.getString('password');
+    const roleId = roleMappings[password];
 
-    // Check if the password is correct
-    if (password === correctPassword) {
-      const role = interaction.guild.roles.cache.get(captainRoleId);
-
+    if (roleId) {
+      const role = interaction.guild.roles.cache.get(roleId);
       if (role) {
-        // Assign the captain role to the user
         await interaction.member.roles.add(role);
-        await interaction.reply({ content: 'You have been given the Captain role!', ephemeral: true });
+        await interaction.reply({ content: `You have been given the ${role.name} role!`, ephemeral: true });
       } else {
-        await interaction.reply({ content: 'Captain role not found.', ephemeral: true });
+        await interaction.reply({ content: 'Role not found.', ephemeral: true });
       }
     } else {
-      // Incorrect password
       await interaction.reply({ content: 'Incorrect password!', ephemeral: true });
     }
   }
